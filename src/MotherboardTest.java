@@ -22,6 +22,8 @@ public class MotherboardTest {
         Mock.MockDevice mock = new Mock.MockDevice(0, true);
         Mock.MockDevice duplicate = new Mock.MockDevice(0, false);
 
+        assertThrows(NullPointerException.class, () -> motherboard.addDevice(null));
+
         assertTrue(motherboard.addDevice(mock));
         assertFalse(motherboard.addDevice(mock));
         assertFalse(motherboard.addDevice(duplicate));
@@ -63,6 +65,8 @@ public class MotherboardTest {
         Message message = Message.of(1, 1, "100");
         handler.clearLogRecords();
 
+        assertThrows(NullPointerException.class, () -> motherboard.sendMessage(null));
+
         assertFalse(motherboard.sendMessage(message));
         assertTrue(handler.getLastLog().orElse("").contains("no device matches the message's recipient"));
 
@@ -71,12 +75,14 @@ public class MotherboardTest {
     }
 
     @Test
-    public void broadcastMessage() {
+    public void sendBroadcastMessage() {
         Motherboard motherboard = new Motherboard();
         motherboard.addDevice(new Mock.MockDevice(1, true));
         String binary = "100";
         String notBinary = "not binary";
         handler.clearLogRecords();
+
+        assertThrows(NullPointerException.class, () -> motherboard.sendBroadcastMessage(null));
 
         assertTrue(motherboard.sendBroadcastMessage(binary));
         assertEquals(handler.getLastLog(), Optional.empty());

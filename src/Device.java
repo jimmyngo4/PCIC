@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +23,7 @@ public abstract class Device {
      * @return whether this device is connected to a motherboard and can therefore send the message up
      */
     protected boolean sendMessage(Message message) {
+        Objects.requireNonNull(message);
         if (!connectedToMotherboard()) {
             logger.log(Level.WARNING, "couldn't send message because device is not connected to a motherboard");
             return false;
@@ -34,6 +36,7 @@ public abstract class Device {
      * @return whether an application is on the specified port and the message can be delivered there
      */
     protected boolean receiveMessage(Message message) {
+        Objects.requireNonNull(message);
         if (!portMapping.containsKey(message.port())) {
             logger.log(Level.WARNING, "no application exists for the message's port to deliver the message to");
             return false;
@@ -47,6 +50,7 @@ public abstract class Device {
      * @return whether this message was successfully broadcast
      */
     protected boolean sendBroadcastMessage(String payload) {
+        Objects.requireNonNull(payload);
         if (!Message.binaryString(payload)) {
             logger.log(Level.WARNING, "payload is not in the correct format (binary string)");
             return false;
@@ -93,6 +97,7 @@ public abstract class Device {
      * @return whether this application was successfully added
      */
     protected boolean addApplication(int port, Application application) {
+        Objects.requireNonNull(application);
         if (portMapping.containsKey(port))
             return false;
         portMapping.put(port, application);
@@ -127,6 +132,7 @@ public abstract class Device {
      * @return whether this device was successfully connected to the given motherboard
      */
     protected boolean setMotherboard(Motherboard motherboard) {
+        Objects.requireNonNull(motherboard);
         if (motherboard.hasDeviceWithID(this.identifier))
             return false;
         this.motherboard = motherboard;

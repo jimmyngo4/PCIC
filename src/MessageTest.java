@@ -6,12 +6,9 @@ public class MessageTest {
 
     @Test
     public void of() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            Message.of(0, 0, "");
-        });
-        assertThrows(IllegalArgumentException.class, () -> {
-            Message.of(1, 1, "non-binary string");
-        });
+        assertThrows(NullPointerException.class, () -> Message.of(0, 0, null));
+        assertThrows(IllegalArgumentException.class, () -> Message.of(0, 0, ""));
+        assertThrows(IllegalArgumentException.class, () -> Message.of(1, 1, "non-binary string"));
 
         Message message1 = new Message(2, 2, "100");
         Message message2 = Message.of(2, 2, "100");
@@ -24,6 +21,8 @@ public class MessageTest {
     public void binaryString() {
         String binary = "100";
         String notBinary = "not binary";
+
+        assertThrows(NullPointerException.class, () -> Message.binaryString(null));
 
         assertTrue(Message.binaryString(binary));
         assertFalse(Message.binaryString(notBinary));

@@ -51,6 +51,8 @@ public class ApplicationTest {
         Message message = new Message(1, 1, "100");
         handler.clearLogRecords();
 
+        assertThrows(NullPointerException.class, () -> application.sendMessage(null));
+
         application.sendMessage(message);
         assertTrue(handler.getLastLog().orElse("").contains("this application isn't connected to a device's port so it cannot receive messages"));
 
@@ -66,6 +68,8 @@ public class ApplicationTest {
         String notBinary = "not binary";
         Mock.MockDevice device = new Mock.MockDevice(1, false);
         Mock.MockApplication app = new Mock.MockApplication(device);
+
+        assertThrows(NullPointerException.class, () -> app.sendBroadcastMessage(null));
 
         assertFalse(app.sendBroadcastMessage(notBinary));
         assertTrue(handler.getLastLog().orElse("").contains("payload is not in the correct format (binary string)"));

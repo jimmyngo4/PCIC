@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,7 @@ public class Motherboard {
      * @return whether this motherboard already has a device with the identifier, and if not, "connects" with it
      */
     protected boolean addDevice(Device device) {
+        Objects.requireNonNull(device);
         if (devices.containsKey(device.identifier()))
             return false;
         devices.put(device.identifier(), device);
@@ -55,6 +57,7 @@ public class Motherboard {
      * @return whether this motherboard is connected to a device with identifier matching the message's recipient
      */
     protected boolean sendMessage(Message message) {
+        Objects.requireNonNull(message);
         if (!devices.containsKey(message.recipient())) {
             logger.log(Level.WARNING, "no device matches the message's recipient");
             return false;
@@ -63,6 +66,7 @@ public class Motherboard {
     }
 
     protected boolean sendBroadcastMessage(String payload) {
+        Objects.requireNonNull(payload);
         if (Message.binaryString(payload)) {
             devices.values().stream().filter(Device::receiveBroadcast).forEach(device -> {
                 device.receiveBroadcastMessage(payload);

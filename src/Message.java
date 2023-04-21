@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Message {
 
     private final int recipient;
@@ -17,6 +19,7 @@ public class Message {
      * @return a new Message
      */
     protected static Message of(int recipient, int port, String payload) {
+        Objects.requireNonNull(payload);
         if (payload.trim().length() == 0)
             throw new IllegalArgumentException("payload cannot be empty or only whitespace");
         if (!binaryString(payload))
@@ -25,6 +28,7 @@ public class Message {
     }
 
     protected static boolean binaryString(String string) {
+        Objects.requireNonNull(string);
         return string.matches("^[0|1]+$");
     }
 

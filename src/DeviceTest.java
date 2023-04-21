@@ -22,6 +22,8 @@ public class DeviceTest {
         handler.clearLogRecords();
         Message message = new Message(2, 2, "100");
 
+        assertThrows(NullPointerException.class, () -> sender.sendMessage(null));
+
         // device has not been connected to a motherboard so sending a message fails
         assertFalse(sender.sendMessage(message));
         assertTrue(handler.getLastLog().orElse("").contains("couldn't send message because device is not connected to a motherboard"));
@@ -51,6 +53,8 @@ public class DeviceTest {
         Mock.MockApplication application = new Mock.MockApplication(device);
         handler.clearLogRecords();
 
+        assertThrows(NullPointerException.class, () -> device.receiveMessage(null));
+
         assertFalse(device.receiveMessage(message));
         assertTrue(handler.getLastLog().orElse("").contains("no application exists for the message's port to deliver the message to"));
 
@@ -64,6 +68,8 @@ public class DeviceTest {
         String binary = "100";
         String notBinary = "not binary";
         Mock.MockDevice device = new Mock.MockDevice(1, false);
+
+        assertThrows(NullPointerException.class, () -> device.sendBroadcastMessage(null));
 
         assertFalse(device.sendBroadcastMessage(notBinary));
         assertTrue(handler.getLastLog().orElse("").contains("payload is not in the correct format (binary string)"));
@@ -117,6 +123,8 @@ public class DeviceTest {
         Mock.MockApplication app1 = new Mock.MockApplication(device);
         Mock.MockApplication app2 = new Mock.MockApplication(device);
 
+        assertThrows(NullPointerException.class, () -> device.addApplication(1, null));
+
         assertTrue(device.addApplication(1, app1));
         assertFalse(device.addApplication(1, app2));
         assertTrue(device.addApplication(2, app2));
@@ -166,6 +174,8 @@ public class DeviceTest {
         Motherboard motherboard = new Motherboard();
         Mock.MockDevice device1 = new Mock.MockDevice(1, false);
         Mock.MockDevice duplicate = new Mock.MockDevice(1, true);
+
+        assertThrows(NullPointerException.class, () -> device1.setMotherboard(null));
 
         assertTrue(device1.setMotherboard(motherboard));
         assertFalse(duplicate.setMotherboard(motherboard));

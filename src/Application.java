@@ -1,3 +1,4 @@
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,6 +43,7 @@ public abstract class Application {
      * @return whether the message was successfully sent and received
      */
     protected boolean sendMessage(Message message) {
+        Objects.requireNonNull(message);
         if (port == -1)
             logger.log(Level.WARNING, "this application isn't connected to a device's port so it cannot receive messages");
         return device.sendMessage(message);
@@ -57,6 +59,7 @@ public abstract class Application {
      * @return whether this message was successfully broadcast
      */
     protected boolean sendBroadcastMessage(String payload) {
+        Objects.requireNonNull(payload);
         if (!Message.binaryString(payload)) {
             logger.log(Level.WARNING, "payload is not in the correct format (binary string)");
             return false;
