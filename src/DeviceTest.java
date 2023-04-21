@@ -59,6 +59,24 @@ public class DeviceTest extends Mock {
     }
 
     @Test
+    public void sendBroadcastMessage() {
+        handler.clearLogRecords();
+        String binary = "100";
+        String notBinary = "not binary";
+        MockDevice device = new MockDevice(1, false);
+
+        assertFalse(device.sendBroadcastMessage(notBinary));
+        assertTrue(handler.getLastLog().orElse("").contains("payload is not in the correct format (binary string)"));
+
+        assertFalse(device.sendBroadcastMessage(binary));
+        assertTrue(handler.getLastLog().orElse("").contains("couldn't send message because device is not connected to a motherboard"));
+
+        Motherboard motherboard = new Motherboard();
+        device.setMotherboard(motherboard);
+        assertTrue(device.sendBroadcastMessage(binary));
+    }
+
+    @Test
     public void identifier() {
         MockDevice device = new MockDevice(1, false);
         assertEquals(device.identifier(), 1);

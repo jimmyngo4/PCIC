@@ -42,6 +42,22 @@ public abstract class Device {
         return true;
     }
 
+    /**
+     * @param payload the contents of the broadcast message
+     * @return whether this message was successfully broadcast
+     */
+    protected boolean sendBroadcastMessage(String payload) {
+        if (!Message.binaryString(payload)) {
+            logger.log(Level.WARNING, "payload is not in the correct format (binary string)");
+            return false;
+        }
+        if (!connectedToMotherboard()) {
+            logger.log(Level.WARNING, "couldn't send message because device is not connected to a motherboard");
+            return false;
+        }
+        return motherboard.sendBroadcastMessage(payload);
+    }
+
     protected abstract void receiveBroadcastMessage(String payload);
 
     protected int identifier() {

@@ -58,4 +58,24 @@ public class ApplicationTest {
         // will fail because the device isn't connected to a motherboard
         assertFalse(application.sendMessage(message));
     }
+
+    @Test
+    public void sendBroadcastMessage() {
+        handler.clearLogRecords();
+        String binary = "100";
+        String notBinary = "not binary";
+        Mock.MockDevice device = new Mock.MockDevice(1, false);
+        Mock.MockApplication app = new Mock.MockApplication(device);
+
+        assertFalse(app.sendBroadcastMessage(notBinary));
+        assertTrue(handler.getLastLog().orElse("").contains("payload is not in the correct format (binary string)"));
+
+        // will fail because the device isn't connected to a motherboard
+        assertFalse(app.sendBroadcastMessage(binary));
+        assertTrue(handler.getLastLog().orElse("").contains("this application isn't connected to a device's port so it cannot receive messages"));
+
+        app.connectToPort(3);
+        device.setMotherboard(new Motherboard());
+        assertTrue(app.sendBroadcastMessage(binary));
+    }
 }

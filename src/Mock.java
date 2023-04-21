@@ -18,5 +18,8 @@ public class Mock {
 
         @Override
         protected void receiveMessage(Message message) {}
+
+        @Override
+        protected void receiveBroadcastMessage(String payload) {}
     }
 }

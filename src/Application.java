@@ -51,4 +51,20 @@ public abstract class Application {
      * @param message receive the message and handle it accordingly
      */
     protected abstract void receiveMessage(Message message);
+
+    /**
+     * @param payload the contents of the broadcast message
+     * @return whether this message was successfully broadcast
+     */
+    protected boolean sendBroadcastMessage(String payload) {
+        if (!Message.binaryString(payload)) {
+            logger.log(Level.WARNING, "payload is not in the correct format (binary string)");
+            return false;
+        }
+        if (port == -1)
+            logger.log(Level.WARNING, "this application isn't connected to a device's port so it cannot receive messages");
+        return device.sendBroadcastMessage(payload);
+    }
+
+    protected abstract void receiveBroadcastMessage(String payload);
 }
