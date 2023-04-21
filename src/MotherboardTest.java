@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class MotherboardTest extends Mock {
+public class MotherboardTest {
 
     private final Logger logger = Logger.getLogger(Motherboard.class.getName());
     private final LoggerTestingHandler handler = new LoggerTestingHandler();
@@ -19,8 +19,8 @@ public class MotherboardTest extends Mock {
     @Test
     public void addDevice() {
         Motherboard motherboard = new Motherboard();
-        MockDevice mock = new MockDevice(0, true);
-        MockDevice duplicate = new MockDevice(0, false);
+        Mock.MockDevice mock = new Mock.MockDevice(0, true);
+        Mock.MockDevice duplicate = new Mock.MockDevice(0, false);
 
         assertTrue(motherboard.addDevice(mock));
         assertFalse(motherboard.addDevice(mock));
@@ -30,7 +30,7 @@ public class MotherboardTest extends Mock {
     @Test
     public void removeDevice() {
         Motherboard motherboard = new Motherboard();
-        motherboard.addDevice(new MockDevice(0, true));
+        motherboard.addDevice(new Mock.MockDevice(0, true));
 
         assertFalse(motherboard.removeDevice(1));
         assertTrue(motherboard.removeDevice(0));
@@ -40,10 +40,10 @@ public class MotherboardTest extends Mock {
     @Test
     public void devices() {
         Motherboard motherboard = new Motherboard();
-        MockDevice mock1 = new MockDevice(1, true);
-        MockDevice mock2 = new MockDevice(2, false);
+        Mock.MockDevice mock1 = new Mock.MockDevice(1, true);
+        Mock.MockDevice mock2 = new Mock.MockDevice(2, false);
         motherboard.addDevice(mock1);
-        motherboard.addDevice(mock2);;
+        motherboard.addDevice(mock2);
 
         assertEquals(motherboard.devices(), Map.of(1, mock1, 2, mock2));
     }
@@ -51,7 +51,7 @@ public class MotherboardTest extends Mock {
     @Test
     public void hasDeviceWithID() {
         Motherboard motherboard = new Motherboard();
-        motherboard.addDevice(new MockDevice(1, true));
+        motherboard.addDevice(new Mock.MockDevice(1, true));
 
         assertTrue(motherboard.hasDeviceWithID(1));
         assertFalse(motherboard.hasDeviceWithID(3));
@@ -66,14 +66,14 @@ public class MotherboardTest extends Mock {
         assertFalse(motherboard.sendMessage(message));
         assertTrue(handler.getLastLog().orElse("").contains("no device matches the message's recipient"));
 
-        motherboard.addDevice(new MockDevice(1, false));
+        motherboard.addDevice(new Mock.MockDevice(1, false));
         motherboard.sendMessage(message);
     }
 
     @Test
     public void broadcastMessage() {
         Motherboard motherboard = new Motherboard();
-        motherboard.addDevice(new MockDevice(1, true));
+        motherboard.addDevice(new Mock.MockDevice(1, true));
         String binary = "100";
         String notBinary = "not binary";
         handler.clearLogRecords();

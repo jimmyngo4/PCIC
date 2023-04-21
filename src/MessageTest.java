@@ -7,10 +7,10 @@ public class MessageTest {
     @Test
     public void of() {
         assertThrows(IllegalArgumentException.class, () -> {
-            Message message1 = Message.of(0, 0, "");
+            Message.of(0, 0, "");
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            Message message1 = Message.of(1, 1, "non-binary string");
+            Message.of(1, 1, "non-binary string");
         });
 
         Message message1 = new Message(2, 2, "100");
