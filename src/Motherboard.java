@@ -14,15 +14,25 @@ public class Motherboard {
     }
 
     /**
-     * @param message the message to be sent
-     * @return whether this motherboard is connected to a device with identifier matching the message's recipient
+     * @param device the device to be added
+     * @return whether this motherboard already has a device with the identifier, and if not, "connects" with it
      */
-    protected boolean sendMessage(Message message) {
-        if (!devices.containsKey(message.recipient())) {
-            logger.log(Level.WARNING, "no device matches the message's recipient");
+    protected boolean addDevice(Device device) {
+        if (devices.containsKey(device.identifier()))
             return false;
-        }
-        return devices.get(message.recipient()).receiveMessage(message);
+        devices.put(device.identifier(), device);
+        return true;
+    }
+
+    /**
+     * @param identifier the unique identifier of the device to be removed
+     * @return whether the device was successfully removed from this motherboard
+     */
+    protected boolean removeDevice(int identifier) {
+        if (!devices.containsKey(identifier))
+            return false;
+        devices.remove(identifier);
+        return true;
     }
 
     /**
@@ -41,25 +51,27 @@ public class Motherboard {
     }
 
     /**
-     * @param identifier the unique identifier of the device to be added
-     * @param device the device itself
-     * @return whether this motherboard already has a device with the identifier, and if not, "connects" with it
+     * @param message the message to be sent
+     * @return whether this motherboard is connected to a device with identifier matching the message's recipient
      */
-    protected boolean addDevice(int identifier, Device device) {
-        if (devices.containsKey(identifier))
+    protected boolean sendMessage(Message message) {
+        if (!devices.containsKey(message.recipient())) {
+            logger.log(Level.WARNING, "no device matches the message's recipient");
             return false;
-        devices.put(identifier, device);
-        return true;
+        }
+        return devices.get(message.recipient()).receiveMessage(message);
     }
 
-    /**
-     * @param identifier the unique identifier of the device to be removed
-     * @return whether the device was successfully removed from this motherboard
-     */
-    protected boolean removeDevice(int identifier) {
-        if (!devices.containsKey(identifier))
+    protected boolean sendBroadcastMessage(String payload) {
+        if (Message.binaryString(payload)) {
+            devices.values().stream().filter(Device::receiveBroadcast).forEach(device -> {
+                device.receiveBroadcastMessage(payload);
+            });
+            return true;
+        }
+        else {
+            logger.log(Level.WARNING, "payload is not in the correct format (binary string)");
             return false;
-        devices.remove(identifier);
-        return true;
+        }
     }
 }

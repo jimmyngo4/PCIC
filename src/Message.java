@@ -19,9 +19,13 @@ public class Message {
     protected static Message of(int recipient, int port, String payload) {
         if (payload.trim().length() == 0)
             throw new IllegalArgumentException("payload cannot be empty or only whitespace");
-        if (!payload.matches("$[0|1]+^"))
+        if (!binaryString(payload))
             throw new IllegalArgumentException("payload must be a binary string");
         return new Message(recipient, port, payload);
+    }
+
+    protected static boolean binaryString(String string) {
+        return string.matches("^[0|1]+$");
     }
 
     protected int recipient() {

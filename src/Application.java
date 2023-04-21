@@ -12,21 +12,10 @@ public abstract class Application {
         this.device = device;
     }
 
-    protected boolean connectTo(int port) {
+    protected boolean connectToPort(int port) {
         if (device.addApplication(port, this)) {
-            this.port = port;
-            return true;
-        }
-        return false;
-    }
-
-    protected boolean changePort(int port) {
-        if (port == -1) {
-            logger.log(Level.WARNING, "couldn't change port because application is not connected to a device's port");
-            return false;
-        }
-        if (device.addApplication(port, this)) {
-            device.removeApplication(this.port);
+            if (this.port != -1)
+                device.removeApplication(this.port);
             this.port = port;
             return true;
         }
@@ -41,8 +30,8 @@ public abstract class Application {
     }
 
     /**
-     * @return the port this application is on with regard to the device it is connected to
-     * a port number of -1 signals an invalid port because this application hasn't connected to a device's port
+     * @return the port this application is on with regard to the device it is connected to;
+     *   a port number of -1 signals an invalid port because this application hasn't connected to a device's port
      */
     protected int port() {
         return port;

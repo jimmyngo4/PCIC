@@ -42,15 +42,26 @@ public abstract class Device {
         return true;
     }
 
+    protected abstract void receiveBroadcastMessage(String payload);
+
     protected int identifier() {
         return identifier;
     }
 
+    /**
+     * @param identifier the new identifier for this device
+     * @return whether this device can change its identifier to the given one;
+     *   if this device isn't connected to a motherboard, it can freely change its identifier
+     *   if the motherboard it's connected to does not have a device with the given identifier, change it
+     *   otherwise, return false and exit early
+     */
     protected boolean setIdentifier(int identifier) {
         if (connectedToMotherboard()) {
-            if (!motherboard.addDevice(identifier, this))
+            if (motherboard.hasDeviceWithID(identifier))
                 return false;
             motherboard.removeDevice(this.identifier);
+            this.identifier = identifier;
+            motherboard.addDevice(this);
         }
         this.identifier = identifier;
         return true;
@@ -103,7 +114,7 @@ public abstract class Device {
         if (motherboard.hasDeviceWithID(this.identifier))
             return false;
         this.motherboard = motherboard;
-        motherboard.addDevice(this.identifier, this);
+        motherboard.addDevice(this);
         return true;
     }
 }
