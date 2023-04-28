@@ -8,7 +8,7 @@ public class Motherboard {
 
     private static final Logger logger = Logger.getLogger(Motherboard.class.getName());
 
-    private final Map<Integer, Device> devices;
+    private final Map<Integer, AbstractDevice> devices;
 
     protected Motherboard() {
         devices = new HashMap<>();
@@ -18,7 +18,7 @@ public class Motherboard {
      * @param device the device to be added
      * @return whether this motherboard already has a device with the identifier, and if not, "connects" with it
      */
-    protected boolean addDevice(Device device) {
+    protected boolean addDevice(AbstractDevice device) {
         Objects.requireNonNull(device);
         if (devices.containsKey(device.identifier()))
             return false;
@@ -40,7 +40,7 @@ public class Motherboard {
     /**
      * @return copy of the devices this motherboard is connected to
      */
-    protected Map<Integer, Device> devices() {
+    protected Map<Integer, AbstractDevice> devices() {
         return Map.copyOf(devices);
     }
 
@@ -68,7 +68,7 @@ public class Motherboard {
     protected boolean sendBroadcastMessage(String payload) {
         Objects.requireNonNull(payload);
         if (Message.binaryString(payload)) {
-            devices.values().stream().filter(Device::receiveBroadcast).forEach(device -> {
+            devices.values().stream().filter(AbstractDevice::receiveBroadcast).forEach(device -> {
                 device.receiveBroadcastMessage(payload);
             });
             return true;

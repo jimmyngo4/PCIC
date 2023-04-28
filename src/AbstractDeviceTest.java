@@ -7,9 +7,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DeviceTest {
+public class AbstractDeviceTest {
 
-    private final Logger logger = Logger.getLogger(Device.class.getName());
+    private final Logger logger = Logger.getLogger(AbstractDevice.class.getName());
     private final LoggerTestingHandler handler = new LoggerTestingHandler();
     @Before
     public void setup() {

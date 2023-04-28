@@ -1,25 +1,25 @@
 public class Mock {
 
-    public static class MockDevice extends Device {
+    public static class MockDevice extends AbstractDevice {
 
         public MockDevice(int identifier, boolean receiveBroadcast) {
             super(identifier, receiveBroadcast);
         }
 
         @Override
-        protected void receiveBroadcastMessage(String payload) {}
+        public void receiveBroadcastMessage(String payload) {}
     }
 
-    public static class MockApplication extends Application {
+    public static class MockApplication extends AbstractApplication {
 
-        protected MockApplication(Device device) {
+        protected MockApplication(AbstractDevice device) {
             super(device);
         }
 
         @Override
-        protected void receiveMessage(Message message) {}
+        public void receiveMessage(Message message) {}
 
         @Override
-        protected void receiveBroadcastMessage(String payload) {}
+        public void receiveBroadcastMessage(String payload) {}
     }
 }

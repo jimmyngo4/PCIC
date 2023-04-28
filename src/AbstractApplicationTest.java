@@ -5,9 +5,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ApplicationTest {
+public class AbstractApplicationTest {
 
-    private final Logger logger = Logger.getLogger(Application.class.getName());
+    private final Logger logger = Logger.getLogger(AbstractApplication.class.getName());
     private final LoggerTestingHandler handler = new LoggerTestingHandler();
     @Before
     public void setup() {
