@@ -23,7 +23,18 @@ public class ApplicationTest {
         assertTrue(application1.connectToPort(1));
         assertFalse(application2.connectToPort(1));
         assertTrue(application2.connectToPort(2));
-        assertTrue(application2.connectToPort(3));
+        assertFalse(application2.connectToPort(3));
+    }
+
+    @Test
+    public void connectedToAPort() {
+        Mock.MockDevice device = new Mock.MockDevice(1, false);
+        Mock.MockApplication application1 = new Mock.MockApplication(device);
+
+        assertFalse(application1.connectedToAPort());
+
+        application1.connectToPort(1);
+        assertTrue(application1.connectedToAPort());
     }
 
     @Test
@@ -32,16 +43,6 @@ public class ApplicationTest {
         Mock.MockApplication application = new Mock.MockApplication(device);
 
         assertEquals(application.device(), device);
-    }
-
-    @Test
-    public void port() {
-        Mock.MockDevice device = new Mock.MockDevice(1, false);
-        Mock.MockApplication application = new Mock.MockApplication(device);
-
-        assertEquals(application.port(), -1);
-        application.connectToPort(2);
-        assertEquals(application.port(), 2);
     }
 
     @Test
@@ -54,7 +55,7 @@ public class ApplicationTest {
         assertThrows(NullPointerException.class, () -> application.sendMessage(null));
 
         application.sendMessage(message);
-        assertTrue(handler.getLastLog().orElse("").contains("this application isn't connected to a device's port so it cannot receive messages"));
+        assertTrue(handler.getLastLog().orElse("").contains("messages cannot be received"));
 
         application.connectToPort(1);
         // will fail because the device isn't connected to a motherboard
@@ -76,7 +77,7 @@ public class ApplicationTest {
 
         // will fail because the device isn't connected to a motherboard
         assertFalse(app.sendBroadcastMessage(binary));
-        assertTrue(handler.getLastLog().orElse("").contains("this application isn't connected to a device's port so it cannot receive messages"));
+        assertTrue(handler.getLastLog().orElse("").contains("messages cannot be received"));
 
         app.connectToPort(3);
         device.setMotherboard(new Motherboard());

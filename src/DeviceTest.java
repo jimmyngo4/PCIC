@@ -26,7 +26,7 @@ public class DeviceTest {
 
         // device has not been connected to a motherboard so sending a message fails
         assertFalse(sender.sendMessage(message));
-        assertTrue(handler.getLastLog().orElse("").contains("couldn't send message because device is not connected to a motherboard"));
+        assertTrue(handler.getLastLog().orElse("").contains("couldn't send message from device"));
 
         Motherboard motherboard = new Motherboard();
         sender.setMotherboard(motherboard);
@@ -56,7 +56,7 @@ public class DeviceTest {
         assertThrows(NullPointerException.class, () -> device.receiveMessage(null));
 
         assertFalse(device.receiveMessage(message));
-        assertTrue(handler.getLastLog().orElse("").contains("no application exists for the message's port to deliver the message to"));
+        assertTrue(handler.getLastLog().orElse("").contains("no application is listening on port"));
 
         application.connectToPort(2);
         assertTrue(device.receiveMessage(message));
@@ -75,7 +75,7 @@ public class DeviceTest {
         assertTrue(handler.getLastLog().orElse("").contains("payload is not in the correct format (binary string)"));
 
         assertFalse(device.sendBroadcastMessage(binary));
-        assertTrue(handler.getLastLog().orElse("").contains("couldn't send message because device is not connected to a motherboard"));
+        assertTrue(handler.getLastLog().orElse("").contains("couldn't send message from device"));
 
         Motherboard motherboard = new Motherboard();
         device.setMotherboard(motherboard);

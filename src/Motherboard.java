@@ -59,7 +59,7 @@ public class Motherboard {
     protected boolean sendMessage(Message message) {
         Objects.requireNonNull(message);
         if (!devices.containsKey(message.recipient())) {
-            logger.log(Level.WARNING, "no device matches the message's recipient");
+            logger.log(Level.WARNING, "no device with ID %d is connected to motherboard %s to send the message to".formatted(message.recipient(), this));
             return false;
         }
         return devices.get(message.recipient()).receiveMessage(message);

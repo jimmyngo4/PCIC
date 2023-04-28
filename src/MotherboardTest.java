@@ -68,7 +68,7 @@ public class MotherboardTest {
         assertThrows(NullPointerException.class, () -> motherboard.sendMessage(null));
 
         assertFalse(motherboard.sendMessage(message));
-        assertTrue(handler.getLastLog().orElse("").contains("no device matches the message's recipient"));
+        assertTrue(handler.getLastLog().orElse("").contains("no device with ID"));
 
         motherboard.addDevice(new Mock.MockDevice(1, false));
         motherboard.sendMessage(message);

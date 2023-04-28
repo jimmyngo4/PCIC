@@ -1,6 +1,4 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,6 +8,7 @@ public abstract class Device {
 
     private int identifier;
     private final Map<Integer, Application> portMapping = new HashMap<>();
+    private final Map<Application, Integer> appMapping = new HashMap<>();
     private boolean receiveBroadcast;
     private Motherboard motherboard = null;
 
@@ -25,24 +24,10 @@ public abstract class Device {
     protected boolean sendMessage(Message message) {
         Objects.requireNonNull(message);
         if (!connectedToMotherboard()) {
-            logger.log(Level.WARNING, "couldn't send message because device is not connected to a motherboard");
+            logger.log(Level.WARNING, "couldn't send message from device with ID %d because it is not connected to a motherboard".formatted(identifier));
             return false;
         }
         return motherboard.sendMessage(message);
-    }
-
-    /**
-     * @param message the message to be received
-     * @return whether an application is on the specified port and the message can be delivered there
-     */
-    protected boolean receiveMessage(Message message) {
-        Objects.requireNonNull(message);
-        if (!portMapping.containsKey(message.port())) {
-            logger.log(Level.WARNING, "no application exists for the message's port to deliver the message to");
-            return false;
-        }
-        portMapping.get(message.port()).receiveMessage(message);
-        return true;
     }
 
     /**
@@ -56,10 +41,24 @@ public abstract class Device {
             return false;
         }
         if (!connectedToMotherboard()) {
-            logger.log(Level.WARNING, "couldn't send message because device is not connected to a motherboard");
+            logger.log(Level.WARNING, "couldn't send message from device with ID %d because it is not connected to a motherboard".formatted(identifier));
             return false;
         }
         return motherboard.sendBroadcastMessage(payload);
+    }
+
+    /**
+     * @param message the message to be received
+     * @return whether an application is on the specified port and the message can be delivered there
+     */
+    protected boolean receiveMessage(Message message) {
+        Objects.requireNonNull(message);
+        if (!portMapping.containsKey(message.port())) {
+            logger.log(Level.WARNING, "no application is listening on port %d for device with ID %d to deliver the message to".formatted(message.port(), message.recipient()));
+            return false;
+        }
+        portMapping.get(message.port()).receiveMessage(message);
+        return true;
     }
 
     protected abstract void receiveBroadcastMessage(String payload);
@@ -91,6 +90,12 @@ public abstract class Device {
         return Map.copyOf(portMapping);
     }
 
+    protected Map<Application, Integer> appMapping() { return Map.copyOf(appMapping); }
+
+    protected boolean isApplicationConnected(Application application) {
+        return appMapping.containsKey(application);
+    }
+
     /**
      * @param port the port number to add this application on for this device
      * @param application the application itself
@@ -98,9 +103,16 @@ public abstract class Device {
      */
     protected boolean addApplication(int port, Application application) {
         Objects.requireNonNull(application);
-        if (portMapping.containsKey(port))
+        if (portMapping.containsKey(port)) {
+            logger.log(Level.WARNING, "application %s couldn't be connected to port %d on device with ID %d because the port is already taken by application %s".formatted(application, port, identifier, portMapping.get(port)));
             return false;
+        }
+        if (appMapping.containsKey(application)) {
+            logger.log(Level.WARNING, "this application %s is already connected to port %d so it was not connected to given port %d".formatted(application, appMapping.get(application), port));
+            return false;
+        }
         portMapping.put(port, application);
+        appMapping.put(application, port);
         return true;
     }
 
@@ -111,6 +123,7 @@ public abstract class Device {
     protected boolean removeApplication(int port) {
         if (!portMapping.containsKey(port))
             return false;
+        appMapping.remove(portMapping.get(port));
         portMapping.remove(port);
         return true;
     }
