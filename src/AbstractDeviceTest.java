@@ -118,6 +118,20 @@ public class AbstractDeviceTest {
     }
 
     @Test
+    public void appMapping() {
+        Mock.MockDevice device = new Mock.MockDevice(1, false);
+        Mock.MockApplication application = new Mock.MockApplication(device);
+
+        assertEquals(device.appMapping(), new HashMap<>());
+        assertThrows(UnsupportedOperationException.class, () -> {
+            device.appMapping().put(application, 2);
+        });
+
+        device.addApplication(2, application);
+        assertEquals(device.appMapping(), Map.of(application, 2));
+    }
+
+    @Test
     public void addApplication() {
         Mock.MockDevice device = new Mock.MockDevice(1, false);
         Mock.MockApplication app1 = new Mock.MockApplication(device);

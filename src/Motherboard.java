@@ -6,10 +6,19 @@ import java.util.logging.Logger;
 
 public class Motherboard {
 
+    /**
+     * Logger to log descriptive warning messages instead of throwing exceptions
+     */
     private static final Logger logger = Logger.getLogger(Motherboard.class.getName());
 
-    private final Map<Integer, AbstractDevice> devices;
+    /**
+     * mapping of device IDs to a device
+     */
+    private final Map<Integer, Device> devices;
 
+    /**
+     * creates a new Motherboard with no connected devices
+     */
     protected Motherboard() {
         devices = new HashMap<>();
     }
@@ -17,8 +26,10 @@ public class Motherboard {
     /**
      * @param device the device to be added
      * @return whether this motherboard already has a device with the identifier, and if not, "connects" with it
+     * @throws NullPointerException if the device is null
+     * Adds to devices if successful
      */
-    protected boolean addDevice(AbstractDevice device) {
+    protected boolean addDevice(Device device) {
         Objects.requireNonNull(device);
         if (devices.containsKey(device.identifier()))
             return false;
@@ -29,6 +40,7 @@ public class Motherboard {
     /**
      * @param identifier the unique identifier of the device to be removed
      * @return whether the device was successfully removed from this motherboard
+     * Removes from devices if successful
      */
     protected boolean removeDevice(int identifier) {
         if (!devices.containsKey(identifier))
@@ -38,9 +50,9 @@ public class Motherboard {
     }
 
     /**
-     * @return copy of the devices this motherboard is connected to
+     * @return unmodifiable copy of the devices this motherboard is connected to
      */
-    protected Map<Integer, AbstractDevice> devices() {
+    protected Map<Integer, Device> devices() {
         return Map.copyOf(devices);
     }
 
@@ -55,6 +67,9 @@ public class Motherboard {
     /**
      * @param message the message to be sent
      * @return whether this motherboard is connected to a device with identifier matching the message's recipient
+     * @throws NullPointerException if the device is null
+     * Logs a warning and returns false when no device with the message's ID is connected to this motherboard
+     * Calls device.receiveMessage(message)
      */
     protected boolean sendMessage(Message message) {
         Objects.requireNonNull(message);
@@ -65,10 +80,18 @@ public class Motherboard {
         return devices.get(message.recipient()).receiveMessage(message);
     }
 
+    /**
+     * @param payload the payload to broadcast
+     * @return whether any device received the broadcast message
+     * @throws NullPointerException if the payload is null
+     * Logs a warning message and returns false if the payload is not binary
+     * Calls device.receiveBroadcast()
+     * Calls device.receiveBroadcastMessage(payload)
+     */
     protected boolean sendBroadcastMessage(String payload) {
         Objects.requireNonNull(payload);
         if (Message.binaryString(payload)) {
-            devices.values().stream().filter(AbstractDevice::receiveBroadcast).forEach(device -> {
+            devices.values().stream().filter(Device::receiveBroadcast).forEach(device -> {
                 device.receiveBroadcastMessage(payload);
             });
             return true;

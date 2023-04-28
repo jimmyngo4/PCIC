@@ -34,6 +34,7 @@ public class AbstractApplicationTest {
         assertFalse(application1.connectedToAPort());
 
         application1.connectToPort(1);
+
         assertTrue(application1.connectedToAPort());
     }
 
