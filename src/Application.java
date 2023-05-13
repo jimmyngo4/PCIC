@@ -1,43 +1,60 @@
 /**
- * Represents an application on a device
+ * Represents an Application on a Device
  */
 public interface Application {
 
     /**
-     * @param port the port to have this application listen on for the device this application is on
-     * @return whether this application was successfully connected to the given port
+     * Connects this Application to the specified port for the Device this Application is on.
+     * Returns whether this Application was successfully connected.
+     *
+     * @param port the port to have this Application listen on for the Device this Application is on
+     * @return whether this Application was successfully connected to the given port
      */
     boolean connectToPort(int port);
 
     /**
-     * @return whether this application is listening on a port
+     * Return whether this Application is listening to a port on the Device this Application is on.
+     *
+     * @return whether this Application is listening on a port
      */
     boolean connectedToAPort();
 
     /**
-     * @return the device this application is on
+     * Returns the Device this Application is on.
+     *
+     * @return the Device this Application is on
      */
     Device device();
 
     /**
-     * @param message the message to send
-     * @return whether this message was successfully sent
+     * Sends a Message from this Application to another Device and Application.
+     * Returns whether this Message was successfully sent to another Device or Application.
+     *
+     * @param message the Message to send
+     * @return whether this Message was successfully sent
      */
     boolean sendMessage(Message message);
 
     /**
-     * @param message the message to receive and handle
+     * Receive the Message sent to this Application and handle it accordingly.
+     *
+     * @param message the Message to receive and handle
      */
     void receiveMessage(Message message);
 
     /**
-     * @param payload the actual content of the message to send
-     * @return whether this message was successfully broadcast
+     * Broadcast a Message to any Device open to receiving them.
+     * Return whether this Message was successfully broadcast.
+     *
+     * @param payload the actual content of the Message to send
+     * @return whether this Message was successfully broadcast
      */
     boolean sendBroadcastMessage(String payload);
 
     /**
-     * @param payload the actual content of the message to receive and handle
+     * Receive a broadcast Message and handle it accordingly.
+     *
+     * @param payload the actual content of the Message to receive and handle
      */
     void receiveBroadcastMessage(String payload);
 }

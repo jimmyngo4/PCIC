@@ -4,6 +4,9 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Represents a Motherboard which will have Devices connected to it and Applications on those Devices.
+ */
 public class Motherboard {
 
     /**
@@ -12,7 +15,7 @@ public class Motherboard {
     private static final Logger logger = Logger.getLogger(Motherboard.class.getName());
 
     /**
-     * mapping of device IDs to a device
+     * mapping of device IDs to a Device
      */
     private final Map<Integer, Device> devices;
 
@@ -24,9 +27,12 @@ public class Motherboard {
     }
 
     /**
-     * @param device the device to be added
-     * @return whether this motherboard already has a device with the identifier, and if not, "connects" with it
-     * @throws NullPointerException if the device is null
+     * Adds the given Device to this Motherboard.
+     * Returns if the given Device was successfully added.
+     *
+     * @param device the Device to be added
+     * @return whether this Motherboard already has a Device with the identifier, and if not, "connects" with it
+     * @throws NullPointerException if the given Device is null
      * Adds to devices if successful
      */
     protected boolean addDevice(Device device) {
@@ -38,8 +44,11 @@ public class Motherboard {
     }
 
     /**
-     * @param identifier the unique identifier of the device to be removed
-     * @return whether the device was successfully removed from this motherboard
+     * Removes the Device with the given identifier from this Motherboard.
+     * Returns if a Device was removed from this Motherboard or not.
+     *
+     * @param identifier the unique identifier of the Device to be removed
+     * @return whether the Device was successfully removed from this Motherboard
      * Removes from devices if successful
      */
     protected boolean removeDevice(int identifier) {
@@ -50,25 +59,32 @@ public class Motherboard {
     }
 
     /**
-     * @return unmodifiable copy of the devices this motherboard is connected to
+     * Returns an unmodifiable copy of the mapping of identifier to Device for this Motherboard.
+     *
+     * @return unmodifiable copy of the devices this Motherboard is connected to
      */
     protected Map<Integer, Device> devices() {
         return Map.copyOf(devices);
     }
 
     /**
-     * @param identifier unique identifier of a device
-     * @return whether this motherboard already has a device with the given identifier
+     * Returns whether this Motherboard has a Device with the given identifier.
+     *
+     * @param identifier unique identifier of a Device
+     * @return whether this Motherboard already has a Device with the given identifier
      */
     protected boolean hasDeviceWithID(int identifier) {
         return devices.containsKey(identifier);
     }
 
     /**
-     * @param message the message to be sent
-     * @return whether this motherboard is connected to a device with identifier matching the message's recipient
-     * @throws NullPointerException if the device is null
-     * Logs a warning and returns false when no device with the message's ID is connected to this motherboard
+     * Sends the given Message to the Message's recipient if they are connected to this motherboard.
+     * Returns whether the Message was successfully sent.
+     *
+     * @param message the Message to be sent
+     * @return whether this Motherboard is connected to a Device with identifier matching the Message's recipient
+     * @throws NullPointerException if the Device is null
+     * Logs a warning and returns false when no Device with the Message's ID is connected to this Motherboard
      * Calls device.receiveMessage(message)
      */
     protected boolean sendMessage(Message message) {
@@ -81,8 +97,11 @@ public class Motherboard {
     }
 
     /**
+     * Sends the given broadcast message to all Devices connected to this Motherboard that wants to receive broadcast messages.
+     * Returns whether any Device received the broadcast message.
+     *
      * @param payload the payload to broadcast
-     * @return whether any device received the broadcast message
+     * @return whether any Device received the broadcast message
      * @throws NullPointerException if the payload is null
      * Logs a warning message and returns false if the payload is not binary
      * Calls device.receiveBroadcast()

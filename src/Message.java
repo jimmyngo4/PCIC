@@ -1,16 +1,16 @@
 import java.util.Objects;
 
 /**
- * Represents a Message that will be sent from Application <-> Device <-> Motherboard <-> Device <-> Application
+ * Represents a Message that will be sent from Applications and Devices to other Devices and Applications.
  */
 public class Message {
 
     /**
-     * the unique device ID of the recipient
+     * the unique Device ID of the recipient
      */
     private final int recipient;
     /**
-     * the unique port number for that device
+     * the unique port number for that Device
      */
     private final int port;
     /**
@@ -19,9 +19,11 @@ public class Message {
     private final String payload;
 
     /**
-     * @param recipient which device to send to
-     * @param port which port on that device to send to
-     * @param payload content of the message itself
+     * Creates a new Message with no error checking.
+     *
+     * @param recipient which Device to send to
+     * @param port which port on that Device to send to
+     * @param payload content of the Message itself
      */
     protected Message(int recipient, int port, String payload) {
         this.recipient = recipient;
@@ -30,9 +32,11 @@ public class Message {
     }
 
     /**
-     * @param recipient the unique device identifier to send the message to
-     * @param port the unique port number of the application on the device to send the message to
-     * @param payload a non-empty binary string representing the message's content
+     * Static factory method to create a new Message with error checking.
+     *
+     * @param recipient the unique Device identifier to send the Message to
+     * @param port the unique port number of the Application on the Device to send the Message to
+     * @param payload a non-empty binary string representing the Message's content
      * @return a new Message
      * @throws NullPointerException when the payload is null
      * @throws IllegalArgumentException when the payload is empty or only whitespace
@@ -49,6 +53,8 @@ public class Message {
     }
 
     /**
+     * Static method to check if the given string is binary.
+     *
      * @param string the string to match against
      * @return whether the string is binary
      */
@@ -58,21 +64,27 @@ public class Message {
     }
 
     /**
-     * @return recipient of this message
+     * Returns the recipient of this Message.
+     *
+     * @return recipient of this Message
      */
     protected int recipient() {
         return recipient;
     }
 
     /**
-     * @return port this message should go to
+     * Returns the port of this Message.
+     *
+     * @return port this Message should go to
      */
     protected int port() {
         return port;
     }
 
     /**
-     * @return payload of this message
+     * Returns the payload of this Message.
+     *
+     * @return payload of this Message
      */
     protected String payload() {
         return payload;
